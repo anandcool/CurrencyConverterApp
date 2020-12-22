@@ -1,8 +1,10 @@
 import React,{useState} from 'react'
-import { SafeAreaView, View,ScrollView,Text,StyleSheet, TextInput } from 'react-native'
+import { SafeAreaView, View,ScrollView,Text,StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 
 const App = () =>{
-  const [inputValue, setInputValue] = useState()
+  const [inputValue, setInputValue] = useState(0);
+  const [resultValue,setResultValue] = useState(0)
+
 
   const currencyPerRupee = {
     DOLLAR:0.014,
@@ -16,23 +18,42 @@ const App = () =>{
     BITCOIN:0.000004
   }
 
+  const buttonPressed = (currency) =>{
+      if(!currency){
+        //Alert box
+      }else{
+        let result = parseFloat(inputValue) * currencyPerRupee[currency];
+        setResultValue(result.toFixed(2))
+        setInputValue(0)
+      }
+  }
+
   return (
     <>
-    <ScrollView backgroundColor="#1b262c">
+    <ScrollView backgroundColor="#1b262c"
+    keyboardShouldPersistTaps="handled"
+    contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView style={styles.container}>      
       <View style={styles.resultContainer}>
-      <Text style={styles.resultValue}>12.23</Text>
+      <Text style={styles.resultValue}>{resultValue}</Text>
       </View>
       <View style={styles.inputContainer}>
       <TextInput
       style={styles.input}
       keyboardType="numeric"
       placeholder="Enter Value"
-      placeholderTextColor="#c1c1c1">
+      placeholderTextColor="#c1c1c1"
+      value={inputValue}
+      onChangeText={inputVal => setInputValue(inputVal)}>
       </TextInput>
       </View>
       <View style={styles.convertButtonContainer}>
-
+      {Object.keys(currencyPerRupee).map((currency) => (
+        <TouchableOpacity style={styles.converterButton}  key={currency} onPress={(currency)=>buttonPressed(currency)}>
+          <Text style={styles.convertButtonText}>{currency}</Text>
+        </TouchableOpacity>
+      ))
+      }
       </View>
       </SafeAreaView>
 
@@ -74,7 +95,20 @@ const styles = StyleSheet.create({
   convertButtonContainer:{
     flexDirection:'row',
     flexWrap:'wrap',
-    marginTop:10
+    marginTop:30
+  },
+  convertButtonText:{
+    color:'#FFF',
+    fontSize:15
+  },
+  converterButton:{
+    alignItems:'center',
+    justifyContent:'center',
+    height:100,
+    width:"33.3%",
+    borderWidth:2,
+    borderColor:'#bbe1fa',
+    backgroundColor:'#0f4c75'
   }
 })
 
